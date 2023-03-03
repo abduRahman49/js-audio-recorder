@@ -9,6 +9,12 @@ let audioDiv = document.getElementById('audio');
 // segments de données audio
 let chunks = [];
 
+const opts = {
+  types: [{
+    accept: {'audio/mp3': ['.mp3']},
+  }]
+};
+
 
 
 startRecord.addEventListener('click', (e) => {
@@ -21,8 +27,7 @@ startRecord.addEventListener('click', (e) => {
     // l'enregistreur nommé recorder détient une méthode nommée start() permettant de démarrer un enregistrement
     recorder.start();
     console.log('Enregistrement a démarré...');
-    e.target.style.color = 'black';
-    e.target.style.background = 'red';
+    e.target.style.cssText = 'background: red; color: black';
 
     /* l'objet recorder dispose d'un event listener qui écoute si des données son disponibles en entrée standard et les ajoute à la liste 
       dédiée à l'enregistrement des portions de données audio 'chunks'
@@ -36,8 +41,7 @@ startRecord.addEventListener('click', (e) => {
         l'enregistrement
       */
       recorder.stop();
-      e.target.style.background = '';
-      e.target.style.color = '';
+      e.target.style.cssText = 'background: ""; color: ""';
 
     });
 
@@ -50,11 +54,18 @@ startRecord.addEventListener('click', (e) => {
       /* crée un fichier audio en passant en au constructeur Blob un array de données brutes (binaires) ainsi que le type de fichier que l'on
         souhaite obtenir
       */
-      let blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
-      // crée un objet de type url représentant l'url pointant sur l'audio que l'on vient de créer
+      let blob = new Blob(chunks, { type: "audio/mp3; codecs=opus" });
+      
       let audioUrl = URL.createObjectURL(blob);
+	    console.log(audioUrl);
       audio.setAttribute('src', audioUrl);
       audioDiv.appendChild(audio);
+      // crée un élément anchor caché qui sera caché, contenant le lien de téléchargement du fichier et qui sera cliqué programmatiquement
+      let a = document.createElement('a');
+      a.style.cssText = 'visibility: hidden';
+      a.href = audioUrl;
+      a.download = 'test.mp3';
+      a.click();
       console.log('Enregistrement arrêté...');
     }
 
