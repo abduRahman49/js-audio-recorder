@@ -13,9 +13,10 @@ const opts = {
   type: "audio/mp3; codecs=opus"
 };
 
+
 // récupère l'élément input du formulaire et supprime son affichage
 let inputFile = document.querySelector('#myFile');
-input.style.display = "none";
+inputFile.style.display = "none";
 // récupère l'élément audio de la div en dessous du formulaire et supprime son affichage
 let myAudio = document.querySelector('#myAudio');
 myAudio.style.display = "none";
