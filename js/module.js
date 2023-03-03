@@ -60,7 +60,7 @@ startRecord.addEventListener('click', (e) => {
 	    console.log(audioUrl);
       audio.setAttribute('src', audioUrl);
       audioDiv.appendChild(audio);
-      // crée un élément anchor caché qui sera caché, contenant le lien de téléchargement du fichier et qui sera cliqué programmatiquement
+      // crée un élément anchor qui sera caché, contenant le lien de téléchargement du fichier et qui sera cliqué programmatiquement
       let a = document.createElement('a');
       a.style.cssText = 'visibility: hidden';
       a.href = audioUrl;
