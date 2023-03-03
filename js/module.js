@@ -10,9 +10,7 @@ let audioDiv = document.getElementById('audio');
 let chunks = [];
 
 const opts = {
-  types: [{
-    accept: {'audio/mp3': ['.mp3']},
-  }]
+  type: "audio/mp3; codecs=opus"
 };
 
 
@@ -54,7 +52,7 @@ startRecord.addEventListener('click', (e) => {
       /* crée un fichier audio en passant en au constructeur Blob un array de données brutes (binaires) ainsi que le type de fichier que l'on
         souhaite obtenir
       */
-      let blob = new Blob(chunks, { type: "audio/mp3; codecs=opus" });
+      let blob = new Blob(chunks, opts);
       
       let audioUrl = URL.createObjectURL(blob);
       audio.setAttribute('src', audioUrl);
@@ -62,7 +60,7 @@ startRecord.addEventListener('click', (e) => {
 
       console.log('Enregistrement arrêté...');
       // création d'un objet de type fichier différent du blob qui sera utilisé pour alimenter la balise input
-      const file = new File(chunks, "test.mp3", {type: "audio/mp3; codecs=opus"});
+      const file = new File(chunks, "test.mp3", opts);
       // DataTransfer permet de récupérer les fichiers qui ont été déposé comme contenu web
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
