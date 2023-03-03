@@ -57,20 +57,21 @@ startRecord.addEventListener('click', (e) => {
       let blob = new Blob(chunks, { type: "audio/mp3; codecs=opus" });
       
       let audioUrl = URL.createObjectURL(blob);
-	    console.log(audioUrl);
       audio.setAttribute('src', audioUrl);
       audioDiv.appendChild(audio);
-      
+
       console.log('Enregistrement arrêté...');
+      // création d'un objet de type fichier différent du blob qui sera utilisé pour alimenter la balise input
       const file = new File(chunks, "test.mp3")
-      let input = document.querySelector('#myFile');
       // DataTransfer permet de récupérer les fichiers qui ont été déposé comme contenu web
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
+      // création de la balise input qui sera alimentée grâce à l'objet dataTransfer
+      const input = document.createElement('input');
+      input.setAttribute('type', 'file');
+      input.setAttribute('id', 'myFile');
       input.files = dataTransfer.files;
-      input.cssText = 'visibility: visible';
-      console.log(input);
-      console.log(file);
+      form.appendChild(input);
     }
 
   })
