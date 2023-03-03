@@ -8,12 +8,17 @@ let stopRecord = document.getElementById('stopRecord');
 let audioDiv = document.getElementById('audio');
 // segments de données audio
 let chunks = [];
-
+// configuration liée au format que devra avoir le fichier audio après synthétisation
 const opts = {
   type: "audio/mp3; codecs=opus"
 };
 
-
+// récupère l'élément input du formulaire et supprime son affichage
+let inputFile = document.querySelector('#myFile');
+input.style.display = "none";
+// récupère l'élément audio de la div en dessous du formulaire et supprime son affichage
+let myAudio = document.querySelector('#myAudio');
+myAudio.style.display = "none";
 
 startRecord.addEventListener('click', (e) => {
   navigator.mediaDevices.getUserMedia({audio: true})
@@ -23,23 +28,29 @@ startRecord.addEventListener('click', (e) => {
     */
     let recorder = new MediaRecorder(res);
     // l'enregistreur nommé recorder détient une méthode nommée start() permettant de démarrer un enregistrement
-    recorder.start();
-    console.log('Enregistrement a démarré...');
-    e.target.style.cssText = 'background: red; color: black';
+    if(recorder.state === "inactive"){
+      // si l'utilisateur clique sur le bouton enregistrer la liste chunks sera vidée pour préparer un nouvel enregistrement
+      chunks = [];
+      recorder.start();
+      console.log('Enregistrement a démarré...');
+      e.target.style.cssText = 'background: red; color: black';
 
-    /* l'objet recorder dispose d'un event listener qui écoute si des données son disponibles en entrée standard et les ajoute à la liste 
-      dédiée à l'enregistrement des portions de données audio 'chunks'
-    */
-    recorder.ondataavailable = (e) => {
-      chunks.push(e.data);
+      /* l'objet recorder dispose d'un event listener qui écoute si des données son disponibles en entrée standard et les ajoute à la liste 
+        dédiée à l'enregistrement des portions de données audio 'chunks'
+      */
+      recorder.ondataavailable = (e) => {
+        chunks.push(e.data);
+      }
     }
 
     stopRecord.addEventListener('click', (e) => {
       /* lorsque l'utilisateur clique sur le bouton arrêt enregistrement, cela appelle la méthode stop() de l'objet recorder qui arrête 
         l'enregistrement
       */
-      recorder.stop();
-      e.target.style.cssText = 'background: ""; color: ""';
+      if(recorder.state === "recording" || recorder.state === "paused"){
+        recorder.stop();
+        e.target.style.cssText = 'background: ""; color: ""';
+      }
 
     });
 
@@ -47,16 +58,15 @@ startRecord.addEventListener('click', (e) => {
       sur la page et l'écouter
     */
     recorder.onstop = () => {
-      let audio = document.createElement('audio');
-      audio.setAttribute('controls', true);
+      myAudio.setAttribute('controls', true);
       /* crée un fichier audio en passant en au constructeur Blob un array de données brutes (binaires) ainsi que le type de fichier que l'on
         souhaite obtenir
       */
       let blob = new Blob(chunks, opts);
       
       let audioUrl = URL.createObjectURL(blob);
-      audio.setAttribute('src', audioUrl);
-      audioDiv.appendChild(audio);
+      myAudio.setAttribute('src', audioUrl);
+      myAudio.style.display = "initial";
 
       console.log('Enregistrement arrêté...');
       // création d'un objet de type fichier différent du blob qui sera utilisé pour alimenter la balise input
@@ -64,12 +74,8 @@ startRecord.addEventListener('click', (e) => {
       // DataTransfer permet de récupérer les fichiers qui ont été déposé comme contenu web
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
-      // création de la balise input qui sera alimentée grâce à l'objet dataTransfer
-      const input = document.createElement('input');
-      input.setAttribute('type', 'file');
-      input.setAttribute('id', 'myFile');
-      input.files = dataTransfer.files;
-      form.appendChild(input);
+      inputFile.files = dataTransfer.files;
+      inputFile.style.display = "initial";
     }
 
   })
