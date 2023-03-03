@@ -62,7 +62,7 @@ startRecord.addEventListener('click', (e) => {
 
       console.log('Enregistrement arrêté...');
       // création d'un objet de type fichier différent du blob qui sera utilisé pour alimenter la balise input
-      const file = new File(chunks, "test.mp3")
+      const file = new File(chunks, "test.mp3", {type: "audio/mp3; codecs=opus"});
       // DataTransfer permet de récupérer les fichiers qui ont été déposé comme contenu web
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
