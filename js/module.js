@@ -60,13 +60,17 @@ startRecord.addEventListener('click', (e) => {
 	    console.log(audioUrl);
       audio.setAttribute('src', audioUrl);
       audioDiv.appendChild(audio);
-      // crée un élément anchor qui sera caché, contenant le lien de téléchargement du fichier et qui sera cliqué programmatiquement
-      let a = document.createElement('a');
-      a.style.cssText = 'visibility: hidden';
-      a.href = audioUrl;
-      a.download = 'test.mp3';
-      a.click();
+      
       console.log('Enregistrement arrêté...');
+      const file = new File(chunks, "test.mp3")
+      let input = document.querySelector('#myFile');
+      // DataTransfer permet de récupérer les fichiers qui ont été déposé comme contenu web
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+      input.files = dataTransfer.files;
+      input.cssText = 'visibility: visible';
+      console.log(input);
+      console.log(file);
     }
 
   })
